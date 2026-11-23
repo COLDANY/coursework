@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dgud6wtxli2al"]
+
+[ext_resource type="Script" uid="uid://52krj26vwyha" path="res://scripts/main.gd" id="1_o5qli"]
+
+[sub_resource type="Curve2D" id="Curve2D_sgp6g"]
+
+[node name="Main" type="Node2D" unique_id=2018334687]
+script = ExtResource("1_o5qli")
+
+[node name="Path" type="Path2D" parent="." unique_id=1491709742]
+curve = SubResource("Curve2D_sgp6g")
+
+[node name="SpawnTimer" type="Timer" parent="." unique_id=235133639]
