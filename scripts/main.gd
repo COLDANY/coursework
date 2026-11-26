@@ -32,6 +32,7 @@ func _ready() -> void:
 	add_child(hud)
 	hud.tower_selected.connect(func(type: String): selected_type = type)
 	hud.restart_pressed.connect(_restart)
+	hud.menu_pressed.connect(_to_menu)
 	_update_hud()
 	_run_waves()
 
@@ -62,23 +63,29 @@ func _try_build(pos: Vector2) -> void:
 		gold -= data.cost
 		_update_hud()
 		return
-
+func _wait(sec: float) -> void:
+	var t := Timer.new()
+	t.one_shot = true
+	add_child(t)
+	t.start(sec)
+	await t.timeout
+	t.queue_free()
 func _run_waves() -> void:
 	for i in GameData.WAVES.size():
 		wave_number = i + 1
 		_update_hud()
-		await get_tree().create_timer(3.0).timeout
+		await _wait(3.0)
 		for group in GameData.WAVES[i]:
 			for _n in group.num:
 				if game_over:
 					return
 				_spawn_enemy(group.kind)
-				await get_tree().create_timer(group.interval).timeout
+				await _wait(group.interval)
 		while get_tree().get_nodes_in_group("enemies").size() > 0:
 			if game_over:
 				return
-			await get_tree().create_timer(0.5).timeout
-	_end_game("Победа!")
+			await _wait(0.5)
+	_end_game("Победа!", true)
 
 func _spawn_enemy(kind: String) -> void:
 	var enemy: Enemy = ENEMY_SCENE.instantiate()
@@ -97,12 +104,17 @@ func _on_enemy_reached_end() -> void:
 	if lives <= 0:
 		_end_game("Поражение")
 
-func _end_game(text: String) -> void:
+func _end_game(text: String, won: bool = false) -> void:
 	if game_over:
 		return
 	game_over = true
 	get_tree().paused = true
-	hud.show_result(text)
+	var sub := ""
+	if won:
+		var score := lives * 100 + gold
+		var is_record := SaveData.save_best(score)
+		sub = "Счёт: %d%s" % [score, "  (новый рекорд!)" if is_record else ""]
+	hud.show_result(text, sub)
 
 func _restart() -> void:
 	get_tree().paused = false
@@ -110,3 +122,7 @@ func _restart() -> void:
 
 func _update_hud() -> void:
 	hud.update_info(gold, lives, wave_number, GameData.WAVES.size())
+
+func _to_menu() -> void:
+	get_tree().paused = false
+	get_tree().change_scene_to_file("res://scenes/menu.tscn")

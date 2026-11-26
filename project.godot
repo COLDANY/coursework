@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="TowerdDefense"
-run/main_scene="uid://4td8uvkrq6jl"
+run/main_scene="uid://bl02yuwq0831g"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -34,3 +34,4 @@ pointing/emulate_touch_from_mouse=true
 rendering_device/driver.windows="d3d12"
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
