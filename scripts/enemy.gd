@@ -10,6 +10,7 @@ signal died
 var hp: int
 
 func _ready() -> void:
+	add_to_group("enemies")
 	hp = max_hp
 	loop = false
 	rotates = false

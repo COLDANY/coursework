@@ -16,6 +16,10 @@ func _ready() -> void:
 	path.curve = curve
 	spawn_timer.timeout.connect(_spawn_enemy)
 	spawn_timer.start()
+	
+	var tower := Tower.new()
+	tower.position = Vector2(500, 260)
+	add_child(tower)
 
 func _spawn_enemy() -> void:
 	var enemy := ENEMY_SCENE.instantiate()
