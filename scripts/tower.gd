@@ -1,12 +1,23 @@
 class_name Tower
 extends Node2D
 
-@export var attack_range: float = 180.0
-@export var damage: int = 1
-@export var fire_rate: float = 2.0
+var attack_range: float = 180.0
+var damage: int = 1
+var fire_rate: float = 2.0
+var slow_factor: float = 1.0
+var slow_time: float = 0.0
+var color: Color = Color.ROYAL_BLUE
 
 var cooldown: float = 0.0
 var current_target: Enemy = null
+
+func setup(data: Dictionary) -> void:
+	attack_range = data.attack_range
+	damage = data.damage
+	fire_rate = data.rate
+	slow_factor = data.slow
+	slow_time = data.slow_time
+	color = data.color
 
 func _process(delta: float) -> void:
 	cooldown -= delta
@@ -15,8 +26,10 @@ func _process(delta: float) -> void:
 	if _is_valid_target(current_target) and cooldown <= 0.0:
 		_shoot(current_target)
 		cooldown = 1.0 / fire_rate
+
 func _is_valid_target(e) -> bool:
 	return is_instance_valid(e) and global_position.distance_to(e.global_position) <= attack_range
+
 func _find_target() -> Enemy:
 	var best: Enemy = null
 	for node in get_tree().get_nodes_in_group("enemies"):
@@ -29,9 +42,12 @@ func _shoot(target: Enemy) -> void:
 	var b := Bullet.new()
 	b.target = target
 	b.damage = damage
+	b.slow_factor = slow_factor
+	b.slow_time = slow_time
+	b.color = color
 	get_tree().current_scene.add_child(b)
 	b.global_position = global_position
 
 func _draw() -> void:
-	draw_rect(Rect2(-18, -18, 36, 36), Color.ROYAL_BLUE)
+	draw_rect(Rect2(-18, -18, 36, 36), color)
 	draw_arc(Vector2.ZERO, attack_range, 0, TAU, 64, Color(1, 1, 1, 0.25), 2.0)

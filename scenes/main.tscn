@@ -9,5 +9,3 @@ script = ExtResource("1_o5qli")
 
 [node name="Path" type="Path2D" parent="." unique_id=1491709742]
 curve = SubResource("Curve2D_sgp6g")
-
-[node name="SpawnTimer" type="Timer" parent="." unique_id=235133639]
